@@ -577,3 +577,135 @@ if ("serviceWorker" in navigator) {
     try { await navigator.serviceWorker.register("sw.js"); } catch(e) {}
   });
 }
+/* ============================================================
+   PCPT patch — esconder placeholders (TBD / TODO) em TODO lugar
+   Cole este bloco NO FIM do app.js
+   ============================================================ */
+
+// 1) Detecta placeholders vindos do pcpt.csv
+function isPlaceholderPCPT(row){
+  const dmc = String(row?.DMC ?? "").trim().toUpperCase();
+  const note = String(row?.note ?? "").trim().toUpperCase();
+  return (dmc === "TBD") || note.startsWith("TODO:");
+}
+
+// 2) Sanitiza a linha: remove CRS/DMC/nota quando for placeholder
+function sanitizePCPTRow(row){
+  const r = { ...row };
+  if (isPlaceholderPCPT(row)){
+    // para não aparecer "TBD" nem "TODO: ..."
+    r.CRS  = "";     // ou "—" se quiser, mas vazio fica limpo na tabela
+    r.DMC  = "";
+    r.note = "";
+  }
+  return r;
+}
+
+// 3) Override: carrega PCPT já sanitizado (tabela + mapa por símbolo)
+async function loadPCPT(){
+  const t = await fetchText("data/pcpt.csv");
+  const { headers, rows } = parseCSV(t);
+
+  // *** AQUI é o coração: sanitiza antes de renderizar ***
+  const cleanRows = rows.map(sanitizePCPTRow);
+
+  pcptRaw = cleanRows;
+  pcptHeaders = headers;
+
+  pcptBySymbol = new Map();
+  for (const r of cleanRows){
+    const sym = (r.symbol || r.Symbol || "").trim();
+    if (sym) pcptBySymbol.set(sym, r);
+  }
+
+  const q = (document.getElementById("filter")?.value || "").toLowerCase().trim();
+  const filtered = q ? cleanRows.filter(r =>
+    (r.symbol || "").toLowerCase().includes(q) ||
+    (r.DMC || "").toLowerCase().includes(q) ||
+    (r.note || "").toLowerCase().includes(q)
+  ) : cleanRows;
+
+  renderTable("pcptTable", headers, filtered);
+
+  // re-render da tabela periódica clicável (cores por CRS continuam)
+  renderPeriodicTable();
+}
+
+// 4) Override: no painel de detalhes, se estiver vazio (placeholder), mostra “Not classified yet.”
+function onSelectElement(symbol){
+  activeSymbol = symbol;
+
+  // Highlight active cell
+  const container = document.getElementById("ptable");
+  if (container){
+    container.querySelectorAll(".pt-cell.active").forEach(x => x.classList.remove("active"));
+    const active = container.querySelector(`[data-symbol="${symbol}"]`);
+    if (active) active.classList.add("active");
+  }
+
+  const row = pcptBySymbol.get(symbol);
+  const e = E_BY_SYMBOL.get(symbol);
+
+  const details = document.getElementById("elementDetails");
+  const title = document.getElementById("detailsTitle");
+  const body = document.getElementById("detailsBody");
+
+  if (details && title && body){
+    details.style.display = "block";
+    title.textContent = `${symbol}${e?.n ? " — " + e.n : ""} ${e?.Z ? `(Z=${e.Z})` : ""}`;
+
+    if (!row){
+      body.innerHTML = `<p class="small">No PCPT entry for <b>${symbol}</b> in <code>data/pcpt.csv</code>.</p>`;
+    } else {
+      const CRS = (row.CRS ?? "").trim();
+      const DMC = (row.DMC ?? "").trim();
+      const note = (row.note ?? "").trim();
+
+      const isEmpty = (!CRS && !DMC && !note); // placeholder já “limpo”
+      const CRSshow = isEmpty ? "—" : CRS;
+      const DMCshow = isEmpty ? "—" : DMC;
+      const noteshow = isEmpty ? "Not classified yet." : note;
+
+      body.innerHTML = `
+        <div><span class="tag">CRS</span> <b>${escapeHTML(CRSshow)}</b></div>
+        <div style="margin-top:6px"><span class="tag">DMC</span> ${escapeHTML(DMCshow)}</div>
+        <div style="margin-top:6px" class="small">${escapeHTML(noteshow)}</div>
+      `;
+    }
+  }
+
+  // filtra a tabela PCPT pelo símbolo clicado
+  const filter = document.getElementById("filter");
+  if (filter){
+    filter.value = symbol;
+    filter.dispatchEvent(new Event("input"));
+  }
+
+  // auto-fill do calculator só se tiver números reais E não for placeholder
+  if (row && !isPlaceholderPCPT(row)){
+    const delta = toNum(row.delta_eV ?? row.delta ?? "", NaN);
+    const V     = toNum(row.V_eV ?? row.V ?? "", NaN);
+    const dop   = toNum(row.DeltaOp_eV ?? row.dop_eV ?? row.dop ?? row.DeltaOp ?? "", NaN);
+
+    if (Number.isFinite(delta)) setInputValue("delta", delta);
+    if (Number.isFinite(V))     setInputValue("V", V);
+    if (Number.isFinite(dop))   setInputValue("dop", dop);
+
+    renderOut();
+
+    const calc = document.getElementById("calculator");
+    if (calc) calc.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+}
+
+// 5) Recarrega para aplicar imediatamente quando o app.js carregar
+(async ()=>{
+  try{
+    await loadPCPT();
+    // cases continua opcional (do seu código original)
+    await loadCasesOptional();
+  } catch(e){
+    console.warn("PCPT patch load failed:", e.message);
+  }
+})();
+
