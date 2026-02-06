@@ -1,0 +1,4 @@
+case,theta,delta_eV,V_eV,DeltaOp_eV,observable
+ex1_diatomic,env,6.0,2.0,0.8,bond-order proxy
+ex2_diatomic,env,2.0,2.0,0.2,bond-order proxy
+ex3_complex,ligand field,1.0,0.5,0.12,magnetism proxy
