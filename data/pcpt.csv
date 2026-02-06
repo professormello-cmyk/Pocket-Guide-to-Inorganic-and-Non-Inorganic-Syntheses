@@ -1,6 +1,6 @@
 symbol,CRS,DMC,note
-Fe,2,d↔d,competição intra-d; sensível a ligante/oxidação
-Ni,2,d↔d,competição d-d e estados redox sob U; relevante em catálise
-Pt,3,SOC,5d pesado: SOC/relatividade fortes; reordenações
-Au,3,SOC,5d pesado; efeitos relativísticos dominam química
-Co,2,SC,HS↔LS frequente; depende de campo ligante
+Fe,2,d↔d,intra-d competition; sensitive to ligand field and oxidation state
+Ni,2,d↔d,d–d competition and redox states under U; catalysis-relevant
+Pt,3,SOC,heavy 5d: strong SOC/relativistic effects; frequent reordering
+Au,3,SOC,heavy 5d: relativistic effects dominate chemical behavior
+Co,2,SC,HS↔LS crossover is common; depends on ligand-field strength
