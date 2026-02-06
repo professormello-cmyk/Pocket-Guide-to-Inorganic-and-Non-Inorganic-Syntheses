@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pocket Corridor Table (sd/df)</title>
 
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#0b0f14" />
-  <link rel="icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
@@ -23,25 +23,56 @@
 
       <div class="grid">
         <label for="delta">Δ (eV)
-          <!-- Use text + inputmode decimal to avoid locale comma issues -->
-          <input id="delta" type="text" inputmode="decimal" lang="en" autocomplete="off"
-                 placeholder="1.0" value="1.0" />
+          <!-- Text + inputmode keeps dot-decimal UX regardless of locale -->
+          <input
+            id="delta"
+            type="text"
+            inputmode="decimal"
+            lang="en"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="1.0"
+            value="1.0"
+          />
         </label>
 
         <label for="V">V (eV)
-          <input id="V" type="text" inputmode="decimal" lang="en" autocomplete="off"
-                 placeholder="0.5" value="0.5" />
+          <input
+            id="V"
+            type="text"
+            inputmode="decimal"
+            lang="en"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="0.5"
+            value="0.5"
+          />
         </label>
 
         <label for="dop">Δop (eV)
-          <input id="dop" type="text" inputmode="decimal" lang="en" autocomplete="off"
-                 placeholder="0.2" value="0.2" />
+          <input
+            id="dop"
+            type="text"
+            inputmode="decimal"
+            lang="en"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="0.2"
+            value="0.2"
+          />
         </label>
 
         <label for="T">T (K) (optional)
-          <!-- T can remain numeric-ish, but keep consistent -->
-          <input id="T" type="text" inputmode="numeric" lang="en" autocomplete="off"
-                 placeholder="300" value="300" />
+          <input
+            id="T"
+            type="text"
+            inputmode="numeric"
+            lang="en"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="300"
+            value="300"
+          />
         </label>
       </div>
 
@@ -73,9 +104,15 @@ CRS heuristic (editable):
       </p>
 
       <div class="toolbar">
-        <input id="filter" type="search"
-               placeholder="Filter by symbol (e.g., Fe) or DMC (e.g., SOC)"
-               autocomplete="off" />
+        <input
+          id="filter"
+          type="search"
+          inputmode="search"
+          lang="en"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="Filter by symbol (e.g., Fe) or DMC (e.g., SOC)"
+        />
         <button id="reload" type="button">Reload CSV</button>
       </div>
 
