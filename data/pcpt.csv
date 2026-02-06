@@ -24,9 +24,9 @@ Ti,0,TBD,TODO: classify
 V,0,TBD,TODO: classify
 Cr,0,TBD,TODO: classify
 Mn,0,TBD,TODO: classify
-Fe,2,d↔d,intra-d competition; sensitive to ligand field and oxidation state
-Co,2,SC,HS↔LS crossover is common; depends on ligand-field strength
-Ni,2,d↔d,d–d competition and redox states under U; catalysis-relevant
+Fe,2,dd,intra-d competition; sensitive to ligand field and oxidation state
+Co,2,SC,HS<->LS crossover is common; depends on ligand-field strength
+Ni,2,dd,d-d competition and redox states under U; catalysis-relevant
 Cu,0,TBD,TODO: classify
 Zn,0,TBD,TODO: classify
 Ga,0,TBD,TODO: classify
@@ -117,3 +117,4 @@ Mc,0,TBD,TODO: classify
 Lv,0,TBD,TODO: classify
 Ts,0,TBD,TODO: classify
 Og,0,TBD,TODO: classify
+
