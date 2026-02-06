@@ -117,9 +117,38 @@ CRS heuristic (editable):
         <div class="small" id="detailsBody"></div>
       </div>
 
+      <!-- Human-readable explainer (can be filled by JS, but works as static HTML too) -->
       <details class="small" style="margin-top:10px">
         <summary>What do CRS and DMC mean?</summary>
-        <div id="ptHelp"></div>
+        <div id="ptHelp" style="margin-top:8px; line-height:1.45;">
+          <p>
+            <b>CRS</b> (Corridor Risk Score, 0–3) is a discrete risk flag: how likely the system is to enter a near-degeneracy
+            “corridor” where small chemical changes can flip frontier-orbital character and related observables.
+          </p>
+
+          <ul style="margin:6px 0 0 18px; padding:0">
+            <li><b>0</b>: robust / far from corridor</li>
+            <li><b>1</b>: mild sensitivity</li>
+            <li><b>2</b>: corridor-prone / strong sensitivity</li>
+            <li><b>3</b>: critical / very corridor-like</li>
+          </ul>
+
+          <p style="margin-top:10px">
+            <b>DMC</b> (Dominant Mixing Cue) labels the dominant physical mechanism driving the mixing/instability:
+          </p>
+
+          <ul style="margin:6px 0 0 18px; padding:0">
+            <li><b>d↔d</b>: intra-d competition (ligand field, oxidation, redox states)</li>
+            <li><b>SC</b>: spin crossover (HS↔LS)</li>
+            <li><b>SOC</b>: spin–orbit coupling / relativistic reordering (heavy elements)</li>
+            <li><b>s↔d</b>, <b>p↔d</b>, <b>f/rel</b>: other channel competitions / strong relativistic or f-shell effects</li>
+          </ul>
+
+          <p class="small" style="margin-top:10px">
+            Note: only a subset of elements currently has PCPT metadata. Missing entries appear uncolored and will show
+            “No PCPT entry” when clicked.
+          </p>
+        </div>
       </details>
     </section>
 
