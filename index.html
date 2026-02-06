@@ -18,12 +18,12 @@
   </header>
 
   <main>
-    <section class="card">
+    <!-- 1) Calculator -->
+    <section class="card" id="calculator">
       <h2>1) 2×2 Calculator (from the paper)</h2>
 
       <div class="grid">
         <label for="delta">Δ (eV)
-          <!-- Text + inputmode keeps dot-decimal UX regardless of locale -->
           <input
             id="delta"
             type="text"
@@ -97,8 +97,24 @@ CRS heuristic (editable):
       </details>
     </section>
 
-    <section class="card">
-      <h2>2) PCPT by element (CSV)</h2>
+    <!-- 2) Periodic Table (clickable) -->
+    <section class="card" id="ptableCard">
+      <h2>2) Periodic Table (click an element)</h2>
+      <p class="small">
+        Click an element to highlight it in the PCPT table and show its corridor metadata (CRS / DMC / note).
+      </p>
+
+      <div id="ptable" class="ptable" aria-label="Periodic table"></div>
+
+      <div id="elementDetails" class="details" aria-live="polite" style="display:none;">
+        <h3 id="detailsTitle" style="margin:0 0 8px 0;">Element</h3>
+        <div class="small" id="detailsBody"></div>
+      </div>
+    </section>
+
+    <!-- 3) PCPT table from CSV -->
+    <section class="card" id="pcptCsv">
+      <h2>3) PCPT by element (CSV)</h2>
       <p class="small">
         File: <code>data/pcpt.csv</code> (symbol, CRS, DMC, note). The table below loads this CSV.
       </p>
@@ -119,8 +135,9 @@ CRS heuristic (editable):
       <div id="pcptTable"></div>
     </section>
 
-    <section class="card">
-      <h2>3) Case dataset (synthesis/complexes) — optional</h2>
+    <!-- 4) Optional cases -->
+    <section class="card" id="cases">
+      <h2>4) Case dataset (synthesis/complexes) — optional</h2>
       <p class="small">
         File: <code>data/cases.csv</code> with (Δ, V, Δop, θ, observable) to attach real data and generate reports.
       </p>
