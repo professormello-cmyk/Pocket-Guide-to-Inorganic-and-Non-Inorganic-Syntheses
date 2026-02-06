@@ -6,19 +6,33 @@ const kB_eV_per_K = 8.617333262e-5;
 function abs(x){ return Math.abs(x); }
 function clamp(x, a, b){ return Math.min(b, Math.max(a, x)); }
 
-// Accept "0,1" or "0.1"
+/**
+ * Robust numeric parser:
+ * - Accepts "0,1" or "0.1"
+ * - Removes spaces (including thousands separators like "1 234,56")
+ * - Converts all commas to dots
+ * - Returns fallback for empty/invalid
+ */
 function toNum(x, fallback = NaN){
-  const v = Number(String(x ?? "").trim().replace(",", "."));
+  const s0 = String(x ?? "").trim();
+  if (!s0) return fallback;
+
+  // remove spaces (incl. NBSP) and convert ALL commas to dots
+  const s = s0.replace(/[\s\u00A0]/g, "").replace(/,/g, ".");
+  const v = Number(s);
+
   return Number.isFinite(v) ? v : fallback;
 }
 
+/**
+ * Always prints with dot as decimal separator (JS does).
+ */
 function fmt(x, n = 4){
   if (!Number.isFinite(x)) return "NaN";
   return Number(x).toFixed(n);
 }
 
 function calc2x2(delta, V){
-  // Defensive: avoid division by zero + keep numerics sane
   const d = toNum(delta, NaN);
   const v = toNum(V, NaN);
 
@@ -26,9 +40,8 @@ function calc2x2(delta, V){
     return { R: NaN, sin2phi: NaN, DeltaMix: NaN };
   }
   if (v === 0){
-    // In the V->0 limit: denom = |delta|, sin^2(phi) -> 0 for delta>0, -> 1 for delta<0 (convention)
     const denom0 = abs(d);
-    const sin2phi0 = d >= 0 ? 0 : 1;
+    const sin2phi0 = d >= 0 ? 0 : 1; // convention in the V->0 limit
     return { R: Infinity, sin2phi: sin2phi0, DeltaMix: denom0 };
   }
 
@@ -38,8 +51,7 @@ function calc2x2(delta, V){
   // sin^2(phi) = (1 - delta/denom)/2; clamp to [0,1] for floating error
   const sin2phi = clamp(0.5*(1 - d/denom), 0, 1);
 
-  const DeltaMix = denom;
-  return {R, sin2phi, DeltaMix};
+  return { R, sin2phi, DeltaMix: denom };
 }
 
 // Simple heuristic classifier (EDIT to match your final paper thresholds)
@@ -57,24 +69,32 @@ function renderOut(){
   const delta = toNum(document.getElementById("delta")?.value, NaN);
   const V     = toNum(document.getElementById("V")?.value, NaN);
   const dop   = toNum(document.getElementById("dop")?.value, NaN);
-  const T     = toNum(document.getElementById("T")?.value, 300);
+  const Traw  = toNum(document.getElementById("T")?.value, 300);
 
-  const {R, sin2phi, DeltaMix} = calc2x2(delta, V);
+  const { R, sin2phi, DeltaMix } = calc2x2(delta, V);
   const CRS = classifyCRS(dop, R);
-  const kBT = kB_eV_per_K * (Number.isFinite(T) ? T : 300);
+
+  const T = Number.isFinite(Traw) ? Math.round(Traw) : 300;
+  const kBT = kB_eV_per_K * T;
 
   const out = document.getElementById("out");
   if (!out) return;
 
+  const Rtxt = (R === Infinity) ? "∞" : fmt(R, 3);
+  const sinTxt = fmt(sin2phi, 3);
+
+  // avoid "NaN eV" (gross)
+  const mixTxt = Number.isFinite(DeltaMix) ? `${fmt(DeltaMix,3)} eV` : "NaN";
+
   out.innerHTML = `
     <div>
-      <span class="tag">R</span> ${Number.isFinite(R) ? fmt(R,3) : "∞"} &nbsp; | &nbsp;
-      <span class="tag">sin²φ</span> ${fmt(sin2phi,3)} &nbsp; | &nbsp;
-      <span class="tag">Δmix</span> ${fmt(DeltaMix,3)} eV
+      <span class="tag">R</span> ${Rtxt} &nbsp; | &nbsp;
+      <span class="tag">sin²φ</span> ${sinTxt} &nbsp; | &nbsp;
+      <span class="tag">Δmix</span> ${mixTxt}
     </div>
     <div style="margin-top:6px">
       <span class="tag">CRS</span> <b>${CRS}</b> &nbsp; | &nbsp;
-      <span class="tag">kBT</span> ${fmt(kBT,4)} eV (T=${Number.isFinite(T)? T : 300}K)
+      <span class="tag">kBT</span> ${fmt(kBT,4)} eV (T=${T}K)
     </div>
   `;
 }
@@ -88,7 +108,7 @@ renderOut();
 // ------------------------------------------------------
 
 async function fetchText(url){
-  const res = await fetch(url, {cache:"no-store"});
+  const res = await fetch(url, { cache: "no-store" });
   if(!res.ok) throw new Error(`${url} -> HTTP ${res.status}`);
   return await res.text();
 }
@@ -98,12 +118,13 @@ function splitCSVLine(line){
   const out = [];
   let cur = "";
   let q = false;
-  for (let i=0; i<line.length; i++){
+
+  for (let i = 0; i < line.length; i++){
     const c = line[i];
+
     if (c === '"'){
-      // toggle quote unless it's an escaped quote ""
       const next = line[i+1];
-      if (q && next === '"'){ cur += '"'; i++; }
+      if (q && next === '"'){ cur += '"'; i++; } // escaped ""
       else { q = !q; }
     } else if (c === "," && !q){
       out.push(cur.trim());
@@ -118,16 +139,18 @@ function splitCSVLine(line){
 
 function parseCSV(text){
   const lines = text.trim().split(/\r?\n/).filter(s => s.trim().length);
-  const headers = splitCSVLine(lines[0]).map(s=>s.trim());
+  if (!lines.length) return { headers: [], rows: [] };
+
+  const headers = splitCSVLine(lines[0]).map(s => s.trim());
   const rows = [];
 
-  for(let i=1;i<lines.length;i++){
+  for (let i = 1; i < lines.length; i++){
     const parts = splitCSVLine(lines[i]);
     const row = {};
-    headers.forEach((h,idx)=> row[h] = (parts[idx] ?? "").trim());
+    headers.forEach((h, idx) => row[h] = (parts[idx] ?? "").trim());
     rows.push(row);
   }
-  return {headers, rows};
+  return { headers, rows };
 }
 
 function renderTable(containerId, headers, rows){
@@ -135,13 +158,15 @@ function renderTable(containerId, headers, rows){
   if(!el) return;
 
   if(!rows.length){
-    el.innerHTML = "<p class='small'>Sem dados.</p>";
+    el.innerHTML = "<p class='small'>No data.</p>";
     return;
   }
+
   const thead = `<thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead>`;
   const tbody = `<tbody>${
     rows.map(r=>`<tr>${headers.map(h=>`<td>${(r[h] ?? "")}</td>`).join("")}</tr>`).join("")
   }</tbody>`;
+
   el.innerHTML = `<table>${thead}${tbody}</table>`;
 }
 
@@ -150,15 +175,16 @@ let pcptHeaders = [];
 
 async function loadPCPT(){
   const t = await fetchText("data/pcpt.csv");
-  const {headers, rows} = parseCSV(t);
+  const { headers, rows } = parseCSV(t);
+
   pcptRaw = rows;
   pcptHeaders = headers;
 
   const q = (document.getElementById("filter")?.value || "").toLowerCase().trim();
   const filtered = q ? rows.filter(r =>
-    (r.symbol||"").toLowerCase().includes(q) ||
-    (r.DMC||"").toLowerCase().includes(q) ||
-    (r.note||"").toLowerCase().includes(q)
+    (r.symbol || "").toLowerCase().includes(q) ||
+    (r.DMC || "").toLowerCase().includes(q) ||
+    (r.note || "").toLowerCase().includes(q)
   ) : rows;
 
   renderTable("pcptTable", headers, filtered);
@@ -168,30 +194,30 @@ async function loadCasesOptional(){
   // OPTIONAL: if data/cases.csv does not exist, do not break the app
   try{
     const t = await fetchText("data/cases.csv");
-    const {headers, rows} = parseCSV(t);
+    const { headers, rows } = parseCSV(t);
 
     const augHeaders = headers.concat(["R","sin2phi","DeltaMix","CRS_auto"]);
     const augRows = rows.map(r=>{
       const delta = toNum(r.delta_eV, NaN);
       const V = toNum(r.V_eV, NaN);
       const dop = toNum(r.DeltaOp_eV, NaN);
-      const {R, sin2phi, DeltaMix} = calc2x2(delta, V);
+
+      const { R, sin2phi, DeltaMix } = calc2x2(delta, V);
 
       return {
         ...r,
-        R: Number.isFinite(R) ? fmt(R,3) : "∞",
+        R: (R === Infinity) ? "∞" : fmt(R,3),
         sin2phi: fmt(sin2phi,3),
-        DeltaMix: fmt(DeltaMix,3),
+        DeltaMix: Number.isFinite(DeltaMix) ? fmt(DeltaMix,3) : "NaN",
         CRS_auto: classifyCRS(dop, R)
       };
     });
 
     renderTable("casesTable", augHeaders, augRows);
   } catch(e){
-    // If cases.csv is missing, just leave the section empty
     console.warn("Cases CSV not loaded (optional):", e.message);
     const el = document.getElementById("casesTable");
-    if (el) el.innerHTML = "<p class='small'>Sem <code>data/cases.csv</code> (opcional).</p>";
+    if (el) el.innerHTML = "<p class='small'>No <code>data/cases.csv</code> (optional).</p>";
   }
 }
 
@@ -201,19 +227,24 @@ document.getElementById("reload")?.addEventListener("click", async ()=>{
     await loadPCPT();
     await loadCasesOptional();
   } catch(e){
-    alert("Erro ao carregar CSV: " + e.message);
+    alert("CSV load error: " + e.message);
   }
 });
 
 document.getElementById("filter")?.addEventListener("input", ()=>{
   const q = (document.getElementById("filter")?.value || "").toLowerCase().trim();
+
   const filtered = q ? pcptRaw.filter(r =>
-    (r.symbol||"").toLowerCase().includes(q) ||
-    (r.DMC||"").toLowerCase().includes(q) ||
-    (r.note||"").toLowerCase().includes(q)
+    (r.symbol || "").toLowerCase().includes(q) ||
+    (r.DMC || "").toLowerCase().includes(q) ||
+    (r.note || "").toLowerCase().includes(q)
   ) : pcptRaw;
 
-  renderTable("pcptTable", pcptHeaders.length ? pcptHeaders : (pcptRaw[0] ? Object.keys(pcptRaw[0]) : []), filtered);
+  const headers = pcptHeaders.length
+    ? pcptHeaders
+    : (pcptRaw[0] ? Object.keys(pcptRaw[0]) : []);
+
+  renderTable("pcptTable", headers, filtered);
 });
 
 // Initial load
