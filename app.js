@@ -464,6 +464,20 @@ function setInputValue(id, value){
   el.value = String(value);
 }
 
+// ------------------------------------------------------
+// Passo 1 (como combinado): esconder placeholders
+// - DMC == "TBD" (ignorando espaços/caixa)
+// - note começa com "TODO:" (ignorando espaços/caixa)
+// Resultado: CRS/DMC = "—" e nota = "Not classified yet."
+// ------------------------------------------------------
+
+function isPlaceholderPCPT(row){
+  const dmc = String(row?.DMC ?? "").trim().toUpperCase();
+  const note = String(row?.note ?? "").trim();
+  const noteUp = note.toUpperCase();
+  return (dmc === "TBD") || noteUp.startsWith("TODO:");
+}
+
 function onSelectElement(symbol){
   activeSymbol = symbol;
 
@@ -490,12 +504,15 @@ function onSelectElement(symbol){
     if (!row){
       body.innerHTML = `<p class="small">No PCPT entry for <b>${symbol}</b> in <code>data/pcpt.csv</code>.</p>`;
     } else {
-      const CRS = row.CRS ?? "";
-      const DMC = row.DMC ?? "";
-      const note = row.note ?? "";
+      // --- Passo 1 aplicado aqui ---
+      const placeholder = isPlaceholderPCPT(row);
+
+      const CRS = placeholder ? "—" : (row.CRS ?? "—");
+      const DMC = placeholder ? "—" : (row.DMC ?? "—");
+      const note = placeholder ? "Not classified yet." : (row.note ?? "");
 
       body.innerHTML = `
-        <div><span class="tag">CRS</span> <b>${CRS}</b></div>
+        <div><span class="tag">CRS</span> <b>${escapeHTML(CRS)}</b></div>
         <div style="margin-top:6px"><span class="tag">DMC</span> ${escapeHTML(DMC)}</div>
         <div style="margin-top:6px" class="small">${escapeHTML(note)}</div>
       `;
@@ -512,7 +529,8 @@ function onSelectElement(symbol){
   // OPTIONAL: auto-fill calculator if pcpt.csv provides numeric fields
   // Accepted column names:
   //   delta_eV, V_eV, DeltaOp_eV (or dop_eV)
-  if (row){
+  // IMPORTANT: do not auto-fill if the row is placeholder.
+  if (row && !isPlaceholderPCPT(row)){
     const delta = toNum(row.delta_eV ?? row.delta ?? "", NaN);
     const V     = toNum(row.V_eV ?? row.V ?? "", NaN);
     const dop   = toNum(row.DeltaOp_eV ?? row.dop_eV ?? row.dop ?? row.DeltaOp ?? "", NaN);
