@@ -1,25 +1,255 @@
 :root{
-  --bg:#0b0f14; --fg:#e6edf3; --muted:#9aa4af;
-  --card:#111826; --line:#233044; --accent:#6ee7ff;
+  --bg:#0b0f14;
+  --fg:#e6edf3;
+  --muted:#9aa4af;
+
+  --card:#111826;
+  --line:#233044;
+  --accent:#6ee7ff;
+
+  /* CRS colors (feel free to tweak later) */
+  --crs0:#6bff95;  /* low risk */
+  --crs1:#b7ff6b;  /* mild */
+  --crs2:#ffcf6b;  /* medium */
+  --crs3:#ff6b6b;  /* high */
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--fg)}
-header{padding:18px 18px 10px;border-bottom:1px solid var(--line)}
-h1{margin:0;font-size:22px;letter-spacing:.3px}
-.sub{margin:6px 0 0;color:var(--muted);font-size:14px}
-main{padding:16px;max-width:980px;margin:0 auto}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 14px 10px;margin:12px 0}
-h2{margin:0 0 10px;font-size:16px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
-label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
-input{padding:10px;border-radius:10px;border:1px solid var(--line);background:#0d1420;color:var(--fg)}
-button{margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0d1420;color:var(--fg);cursor:pointer}
-button:hover{border-color:var(--accent)}
-.out{margin-top:12px;padding:10px;border-radius:12px;border:1px dashed var(--line);min-height:52px}
-.small{font-size:12px;color:var(--muted)}
-pre{white-space:pre-wrap}
-.toolbar{display:flex;gap:10px;align-items:center;margin:8px 0}
-table{width:100%;border-collapse:collapse}
-th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;font-size:13px}
-th{color:var(--muted);font-weight:600}
-.tag{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;margin-right:6px}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+}
+
+header{
+  padding:18px 18px 10px;
+  border-bottom:1px solid var(--line);
+}
+
+h1{
+  margin:0;
+  font-size:22px;
+  letter-spacing:.3px;
+}
+
+.sub{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:14px;
+}
+
+main{
+  padding:16px;
+  max-width:980px;
+  margin:0 auto;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px 14px 10px;
+  margin:12px 0;
+}
+
+h2{
+  margin:0 0 10px;
+  font-size:16px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+}
+
+label{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+input{
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#0d1420;
+  color:var(--fg);
+  outline:none;
+}
+
+input:focus{
+  border-color:var(--accent);
+}
+
+button{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#0d1420;
+  color:var(--fg);
+  cursor:pointer;
+}
+
+button:hover{
+  border-color:var(--accent);
+}
+
+.out{
+  margin-top:12px;
+  padding:10px;
+  border-radius:12px;
+  border:1px dashed var(--line);
+  min-height:52px;
+}
+
+.small{
+  font-size:12px;
+  color:var(--muted);
+}
+
+pre{
+  white-space:pre-wrap;
+}
+
+.toolbar{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin:8px 0;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  border-bottom:1px solid var(--line);
+  padding:8px 6px;
+  text-align:left;
+  font-size:13px;
+}
+
+th{
+  color:var(--muted);
+  font-weight:600;
+}
+
+.tag{
+  display:inline-block;
+  padding:2px 8px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  margin-right:6px;
+}
+
+/* -------------------------------------------------------
+   Periodic Table (clickable)
+   ------------------------------------------------------- */
+
+.ptable{
+  margin-top:10px;
+  display:grid;
+  grid-template-columns: repeat(18, minmax(28px, 1fr));
+  gap:6px;
+  align-items:stretch;
+}
+
+/* On narrow screens, squeeze gently (still 18 cols) */
+@media (max-width: 520px){
+  .ptable{
+    gap:4px;
+    grid-template-columns: repeat(18, minmax(18px, 1fr));
+  }
+}
+
+.pt-cell{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#0d1420;
+
+  padding:8px 4px;
+  min-height:54px;
+
+  cursor:pointer;
+  user-select:none;
+  transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.pt-cell:hover{
+  border-color:var(--accent);
+  transform: translateY(-1px);
+}
+
+.pt-cell.active{
+  border-color:var(--accent);
+  box-shadow: 0 0 0 2px rgba(110,231,255,0.18);
+}
+
+.pt-num{
+  position:absolute;
+  top:6px;
+  left:8px;
+  font-size:10px;
+  color:var(--muted);
+}
+
+.pt-sym{
+  font-weight:700;
+  letter-spacing:.2px;
+  font-size:14px;
+  line-height:1.05;
+}
+
+.pt-name{
+  margin-top:3px;
+  font-size:10px;
+  color:var(--muted);
+  line-height:1.05;
+  text-align:center;
+}
+
+/* Color accent by CRS (applied by JS as class crs-0..3) */
+.pt-cell.crs-0{ border-color: rgba(107,255,149,0.55); }
+.pt-cell.crs-1{ border-color: rgba(183,255,107,0.55); }
+.pt-cell.crs-2{ border-color: rgba(255,207,107,0.55); }
+.pt-cell.crs-3{ border-color: rgba(255,107,107,0.55); }
+
+.pt-cell.crs-0.active{ box-shadow: 0 0 0 2px rgba(107,255,149,0.18); }
+.pt-cell.crs-1.active{ box-shadow: 0 0 0 2px rgba(183,255,107,0.18); }
+.pt-cell.crs-2.active{ box-shadow: 0 0 0 2px rgba(255,207,107,0.18); }
+.pt-cell.crs-3.active{ box-shadow: 0 0 0 2px rgba(255,107,107,0.18); }
+
+/* Empty slots (gaps) — JS can render placeholders with this class */
+.pt-empty{
+  border:1px dashed rgba(35,48,68,0.6);
+  border-radius:10px;
+  background: transparent;
+  min-height:54px;
+}
+
+/* Element details box */
+.details{
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#0d1420;
+}
+
+/* Optional legend line */
+#ptLegend{
+  margin-top:6px;
+}
