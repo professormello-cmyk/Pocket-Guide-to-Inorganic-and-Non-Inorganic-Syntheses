@@ -1,5 +1,16 @@
 // Pocket Corridor Table (sd/df) — robust + clickable periodic table
 // ---------------------------------------------------------------
+// This file is intentionally dependency-free (no frameworks).
+// It provides:
+// 1) A 2×2 mixing calculator (delta, V, DeltaOp, T) + derived metrics
+// 2) CSV loading for PCPT rows (data/pcpt.csv) + optional cases (data/cases.csv)
+// 3) A clickable periodic table UI with per-element details
+// 4) A didactic parameter-explanation panel (auto-created if missing)
+//
+// IMPORTANT: The "help panel" below explains the calculator in undergraduate-level English,
+// aimed at synthesis planning (inorganic, bioinorganic, organic, catalysis).
+//
+// kB in eV/K (CODATA / NIST): 8.617333262...×10^-5 eV/K
 
 const kB_eV_per_K = 8.617333262e-5;
 
@@ -27,6 +38,19 @@ function fmt(x, n = 4){
   return Number(x).toFixed(n);
 }
 
+/**
+ * 2×2 mixing model (two-level / two-channel competition)
+ *
+ * Interpret delta (Δ) as the *bare energy separation* between two competing frontier "channels"
+ * (examples: s↔d, d↔d, HS↔LS, SOC-split branches, f/rel).
+ *
+ * Interpret V as the *coupling/mixing* between them (hybridization / interaction).
+ *
+ * Then:
+ *   Δmix = sqrt(Δ^2 + 4 V^2)  is the actual split after mixing (avoided-crossing gap).
+ *   R = |Δ|/|V| is a dimensionless "distance from the corridor"
+ *   sin^2 φ measures mixing weight of one channel in the lower eigenstate (0..1)
+ */
 function calc2x2(delta, V){
   const d = toNum(delta, NaN);
   const v = toNum(V, NaN);
@@ -52,10 +76,48 @@ function classifyCRS(dop, R){
   const D = toNum(dop, NaN);
   const r = toNum(R, NaN);
   if (!Number.isFinite(D) || !Number.isFinite(r)) return 3;
+
+  // Heuristic logic (placeholder): larger operational gap + large R => safer (low risk)
   if (D >= 0.5 && r >= 5) return 0;
   if (D >= 0.2 && r >= 2) return 1;
   if (D >= 0.1 && r >= 1) return 2;
   return 3;
+}
+
+/**
+ * Derived, synthesis-facing diagnostics (computed from delta, V, DeltaOp, T):
+ * - kBT: thermal energy scale (eV) at temperature T
+ * - theta_T: "thermal corridor score" ≈ kBT / max(Δmix, tiny)
+ * - tau: a crude "toggle propensity" proxy combining thermal & mixing (0..~1)
+ *
+ * NOTE: These are *didactic planning metrics*, not claims of kinetics by themselves.
+ * They help decide whether "tiny spectral gaps" are plausibly activated by temperature.
+ */
+function derivedDiagnostics(delta, V, T){
+  const d = toNum(delta, NaN);
+  const v = toNum(V, NaN);
+  const Tn = toNum(T, 300);
+  const TT = Number.isFinite(Tn) ? Math.max(1, Math.round(Tn)) : 300;
+  const kBT = kB_eV_per_K * TT;
+
+  const { DeltaMix, sin2phi, R } = calc2x2(d, v);
+
+  // protect division by zero
+  const gap = Number.isFinite(DeltaMix) ? Math.max(DeltaMix, 1e-12) : NaN;
+
+  const theta_T = Number.isFinite(gap) ? (kBT / gap) : NaN;
+
+  // "tau" is a heuristic: mixing (sin2phi near 0.5) + thermal access => higher.
+  // A smooth bounded proxy: tau = (2*sqrt(sin2phi*(1-sin2phi))) * tanh(theta_T)
+  let mixAmp = NaN;
+  if (Number.isFinite(sin2phi)){
+    mixAmp = 2 * Math.sqrt(Math.max(0, sin2phi*(1 - sin2phi))); // 0..1
+  }
+  const tau = (Number.isFinite(theta_T) && Number.isFinite(mixAmp))
+    ? (mixAmp * Math.tanh(theta_T))
+    : NaN;
+
+  return { kBT, theta_T, tau, DeltaMix, sin2phi, R, TT };
 }
 
 function renderOut(){
@@ -64,11 +126,8 @@ function renderOut(){
   const dop   = toNum(document.getElementById("dop")?.value, NaN);
   const Traw  = toNum(document.getElementById("T")?.value, 300);
 
-  const { R, sin2phi, DeltaMix } = calc2x2(delta, V);
+  const { kBT, theta_T, tau, DeltaMix, sin2phi, R, TT } = derivedDiagnostics(delta, V, Traw);
   const CRS = classifyCRS(dop, R);
-
-  const T = Number.isFinite(Traw) ? Math.round(Traw) : 300;
-  const kBT = kB_eV_per_K * T;
 
   const out = document.getElementById("out");
   if (!out) return;
@@ -77,15 +136,26 @@ function renderOut(){
   const sinTxt = fmt(sin2phi, 3);
   const mixTxt = Number.isFinite(DeltaMix) ? `${fmt(DeltaMix,3)} eV` : "NaN";
 
+  const kBTtxt = Number.isFinite(kBT) ? `${fmt(kBT,4)} eV` : "NaN";
+  const thetaTxt = Number.isFinite(theta_T) ? fmt(theta_T, 3) : "NaN";
+  const tauTxt = Number.isFinite(tau) ? fmt(tau, 3) : "NaN";
+
   out.innerHTML = `
     <div>
-      <span class="tag">R</span> ${Rtxt} &nbsp; | &nbsp;
-      <span class="tag">sin²φ</span> ${sinTxt} &nbsp; | &nbsp;
-      <span class="tag">Δmix</span> ${mixTxt}
+      <span class="tag">R</span> ${escapeHTML(Rtxt)} &nbsp; | &nbsp;
+      <span class="tag">sin²φ</span> ${escapeHTML(sinTxt)} &nbsp; | &nbsp;
+      <span class="tag">Δmix</span> ${escapeHTML(mixTxt)}
     </div>
     <div style="margin-top:6px">
-      <span class="tag">CRS</span> <b>${CRS}</b> &nbsp; | &nbsp;
-      <span class="tag">kBT</span> ${fmt(kBT,4)} eV (T=${T}K)
+      <span class="tag">CRS</span> <b>${escapeHTML(String(CRS))}</b> &nbsp; | &nbsp;
+      <span class="tag">kBT</span> ${escapeHTML(kBTtxt)} (T=${escapeHTML(String(TT))} K)
+    </div>
+    <div style="margin-top:6px">
+      <span class="tag">θT</span> ${escapeHTML(thetaTxt)} &nbsp; | &nbsp;
+      <span class="tag">τ</span> ${escapeHTML(tauTxt)}
+      <span class="small" style="margin-left:8px;color:var(--muted, #9aa4af)">
+        (planning proxies: thermal access & mixing amplitude)
+      </span>
     </div>
   `;
 }
@@ -93,6 +163,178 @@ function renderOut(){
 // Wire calculator
 document.getElementById("calc")?.addEventListener("click", renderOut);
 renderOut();
+
+// ------------------------------------------------------
+// Calculator help panel (auto-created if missing)
+// ------------------------------------------------------
+
+function escapeHTML(s){
+  return String(s ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+const CALC_HELP_HTML = `
+  <div class="help-block">
+    <h3 style="margin:0 0 8px 0;font-size:16px">What the 2×2 calculator means (undergrad level)</h3>
+    <p class="small" style="margin:0 0 10px 0">
+      Think of many “chemical surprises” as a competition between two nearby electronic
+      possibilities (“channels”) that can exchange character.
+      Examples: <b>s↔d</b> promotion in transition metals, <b>d↔d</b> near-degeneracy inside the d-manifold,
+      <b>HS↔LS</b> (spin crossover) in coordination chemistry, <b>SOC</b>-reordered frontier levels in heavy elements,
+      and <b>f/rel</b> effects in lanthanides/actinides.
+    </p>
+
+    <h4 style="margin:10px 0 6px 0;font-size:14px">Inputs</h4>
+    <ul class="small" style="margin:0 0 10px 18px;padding:0">
+      <li>
+        <b>Δ (delta, eV)</b> — the <i>bare separation</i> between two candidate frontier channels
+        before they mix. In synthesis terms: how far apart are the two “stories” the atom/complex could follow?
+        <br><span style="color:var(--muted,#9aa4af)">How to influence Δ:</span>
+        ligand field strength (strong-field vs weak-field ligands), oxidation state, geometry (octahedral vs square-planar),
+        donor/acceptor ligands, protonation, solvent polarity, and external fields (electrochemical potential).
+      </li>
+      <li style="margin-top:6px">
+        <b>V (eV)</b> — the <i>coupling / hybridization strength</i> that mixes the channels.
+        Bigger V means the system can “borrow character” between the two options more easily.
+        <br><span style="color:var(--muted,#9aa4af)">How to influence V:</span>
+        covalency (soft ligands for soft metals), π-backbonding (CO/olefins),
+        orbital overlap (shorter bonds), bridging ligands, and heavier atoms (often stronger mixing via relativistic/SOC mechanisms).
+      </li>
+      <li style="margin-top:6px">
+        <b>Δop (operational gap, eV)</b> — your <i>task-specific gap</i>:
+        the energy distance between the “active manifold” and the nearest competitor that can steal the chemistry.
+        <br><span style="color:var(--muted,#9aa4af)">Practical read:</span>
+        large Δop means the active electronic picture is stable across conditions;
+        small Δop means small changes (ligand, solvent, temperature) can flip reactivity or spin state.
+      </li>
+      <li style="margin-top:6px">
+        <b>T (K)</b> — temperature. It sets the thermal scale <b>kBT</b> (in eV).
+        If kBT becomes comparable to a small gap, population/entropy effects can change the observed chemistry.
+      </li>
+    </ul>
+
+    <h4 style="margin:10px 0 6px 0;font-size:14px">Outputs (what you compute)</h4>
+    <ul class="small" style="margin:0 0 10px 18px;padding:0">
+      <li>
+        <b>Δmix (eV)</b> = √(Δ² + 4V²) — the <i>avoided-crossing gap</i>.
+        Even if Δ is tiny, mixing opens a gap. If Δmix is tiny too, you are in a “corridor” region:
+        small perturbations can reorder frontier character.
+      </li>
+      <li style="margin-top:6px">
+        <b>R</b> = |Δ|/|V| — a dimensionless “distance from the corridor”.
+        <br><span style="color:var(--muted,#9aa4af)">Rule of thumb:</span>
+        R ≫ 1 → weak mixing (safe, stable electronic identity);
+        R ~ 1 → strong competition (corridor);
+        R ≪ 1 → almost maximal mixing (identity is fragile).
+      </li>
+      <li style="margin-top:6px">
+        <b>sin²φ</b> — mixing weight (0..1). Near 0 or 1: mostly one channel. Near 0.5: strong hybrid character.
+        <br><span style="color:var(--muted,#9aa4af)">Why you care:</span>
+        strong mixing often correlates with “condition-sensitive” selectivity in catalysis
+        (different products under small changes in ligands/solvent/additives).
+      </li>
+      <li style="margin-top:6px">
+        <b>kBT (eV)</b> — thermal energy at temperature T. If kBT is not small compared to gaps,
+        thermal population and entropy can alter observed states (especially HS↔LS).
+      </li>
+      <li style="margin-top:6px">
+        <b>θT</b> = kBT/Δmix — a <i>thermal access</i> proxy. Larger θT means thermal energy can “see” the gap.
+      </li>
+      <li style="margin-top:6px">
+        <b>τ</b> — a bounded planning proxy combining <i>mixing amplitude</i> and <i>thermal access</i>.
+        Larger τ suggests “you should expect switching risk” as conditions change.
+      </li>
+      <li style="margin-top:6px">
+        <b>CRS</b> (0–3) — corridor risk score (currently heuristic thresholds in this file).
+        Higher CRS means higher risk that chemistry flips under realistic variations.
+      </li>
+    </ul>
+
+    <h4 style="margin:10px 0 6px 0;font-size:14px">How to use this in synthesis planning</h4>
+    <ol class="small" style="margin:0 0 10px 18px;padding:0">
+      <li>
+        <b>Pick a target reaction role</b>: redox catalyst, cross-coupling center, Lewis acid, spin-state switch,
+        bioinorganic binding site (O₂/NO/CO), etc.
+      </li>
+      <li style="margin-top:6px">
+        <b>Map your “knobs” to Δ and V</b>:
+        <ul style="margin:6px 0 0 18px;padding:0">
+          <li><b>Δ knobs</b>: ligand field strength, oxidation state, geometry, hard/soft donors, protonation.</li>
+          <li><b>V knobs</b>: covalency & overlap, π-backbonding ligands (CO/olefins), bridging, heavier atoms/SOC.</li>
+        </ul>
+      </li>
+      <li style="margin-top:6px">
+        <b>Decide if you want stability or switchability</b>:
+        <ul style="margin:6px 0 0 18px;padding:0">
+          <li><b>Stable catalyst identity</b> (predictable selectivity): aim for larger R and larger Δop.</li>
+          <li><b>Tunable/selectivity-rich system</b> (responsive catalysis, spin-state control): corridor region (R~1) is useful,
+              but you must control conditions carefully.</li>
+        </ul>
+      </li>
+      <li style="margin-top:6px">
+        <b>Temperature sanity check</b>:
+        if θT is large, temperature can activate switching (especially in spin-crossover / bioinorganic binding equilibria).
+      </li>
+    </ol>
+
+    <p class="small" style="margin:0;color:var(--muted,#9aa4af)">
+      Warning: this calculator is a <b>structure-to-risk lens</b>, not a kinetics simulator.
+      It is meant to reduce blind trial-and-error by highlighting when you are near a spectral competition corridor.
+    </p>
+  </div>
+`;
+
+function ensureCalculatorHelpPanel(){
+  // Strategy: find a calculator container; if not found, do nothing.
+  // We try common ids: "calculator", "calcHelp", "helpToggle", "helpPanel".
+  const calcRoot =
+    document.getElementById("calculator") ||
+    document.getElementById("calcRoot") ||
+    document.getElementById("calcBox");
+
+  if (!calcRoot) return;
+
+  // If user already has a help panel in HTML, just wire it.
+  let toggle = document.getElementById("helpToggle");
+  let panel  = document.getElementById("helpPanel");
+
+  if (!toggle || !panel){
+    // Create minimal UI elements (works even if CSS doesn't define these classes)
+    const wrap = document.createElement("div");
+    wrap.style.marginTop = "10px";
+
+    toggle = document.createElement("button");
+    toggle.id = "helpToggle";
+    toggle.type = "button";
+    toggle.className = "btn";
+    toggle.style.cursor = "pointer";
+    toggle.style.marginTop = "8px";
+    toggle.innerHTML = "▼ Explain parameters (click)";
+
+    panel = document.createElement("div");
+    panel.id = "helpPanel";
+    panel.style.display = "none";
+    panel.style.marginTop = "10px";
+    panel.innerHTML = CALC_HELP_HTML;
+
+    wrap.appendChild(toggle);
+    wrap.appendChild(panel);
+    calcRoot.appendChild(wrap);
+  }
+
+  toggle.addEventListener("click", ()=>{
+    const open = panel.style.display !== "none";
+    panel.style.display = open ? "none" : "block";
+    toggle.innerHTML = open ? "▼ Explain parameters (click)" : "▲ Hide explanation";
+  });
+}
+
+// Ensure help panel after load (also safe to call multiple times)
+ensureCalculatorHelpPanel();
 
 // ------------------------------------------------------
 // CSV loader (no deps) — slightly more robust
@@ -145,10 +387,21 @@ function parseCSV(text){
 }
 
 // ------------------------------------------------------
-// Passo 1: esconder placeholders (TBD/TODO) vindo do CSV
+// NEW: status-aware semantics (no more "CRS=0 placebo")
 // ------------------------------------------------------
 
+function normStatus(row){
+  const s = String(row?.status ?? row?.Status ?? "").trim().toLowerCase();
+  if (s === "high" || s === "low" || s === "insufficient") return s;
+  return ""; // unknown / legacy
+}
+
 function isPlaceholderPCPT(row){
+  // Priority 1: explicit status
+  const st = normStatus(row);
+  if (st === "insufficient") return true;
+
+  // Legacy fallback: TBD/TODO
   const dmc = String(row?.DMC ?? "").trim().toUpperCase();
   const note = String(row?.note ?? "").trim();
   const noteUp = note.toUpperCase();
@@ -156,25 +409,27 @@ function isPlaceholderPCPT(row){
 }
 
 function uiRow(row){
-  // devolve uma “visão” do row para UI (não altera o original)
+  // returns a UI view; never mutates original
   if (!row) return row;
-  if (!isPlaceholderPCPT(row)) return row;
 
-  return {
-    ...row,
-    CRS: "—",
-    DMC: "—",
-    note: "Not classified yet."
-  };
-}
+  const st = normStatus(row);
+  const reason = String(row?.reason ?? row?.Reason ?? "").trim();
+  const note = String(row?.note ?? "").trim();
+  const dmc = String(row?.DMC ?? "").trim();
 
-function escapeHTML(s){
-  return String(s ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+  // If insufficient or placeholder, enforce explicit UI semantics
+  if (st === "insufficient" || isPlaceholderPCPT(row)){
+    return {
+      ...row,
+      CRS: "—",
+      DMC: (dmc && dmc.toUpperCase() !== "TBD") ? dmc : "—",
+      status: st || "insufficient",
+      reason: reason || "Unclassified: placeholder (no rule applied yet)",
+      note: note || "Not classified yet."
+    };
+  }
+
+  return { ...row };
 }
 
 function renderTable(containerId, headers, rows){
@@ -188,7 +443,6 @@ function renderTable(containerId, headers, rows){
 
   const thead = `<thead><tr>${headers.map(h=>`<th>${escapeHTML(h)}</th>`).join("")}</tr></thead>`;
 
-  // aplica uiRow() por linha e protege HTML
   const tbody = `<tbody>${
     rows.map(r=>{
       const rr = uiRow(r);
@@ -222,12 +476,14 @@ async function loadPCPT(){
   const filtered = q ? rows.filter(r =>
     (r.symbol || "").toLowerCase().includes(q) ||
     (r.DMC || "").toLowerCase().includes(q) ||
-    (r.note || "").toLowerCase().includes(q)
+    (r.note || "").toLowerCase().includes(q) ||
+    (r.status || "").toLowerCase().includes(q) ||
+    (r.reason || "").toLowerCase().includes(q)
   ) : rows;
 
   renderTable("pcptTable", headers, filtered);
 
-  // After PCPT loads, (re)render periodic table (if container exists)
+  // After PCPT loads, (re)render periodic table
   renderPeriodicTable();
 }
 
@@ -237,20 +493,25 @@ async function loadCasesOptional(){
     const t = await fetchText("data/cases.csv");
     const { headers, rows } = parseCSV(t);
 
-    const augHeaders = headers.concat(["R","sin2phi","DeltaMix","CRS_auto"]);
+    const augHeaders = headers.concat(["R","sin2phi","DeltaMix","kBT_eV","thetaT","tau","CRS_auto"]);
     const augRows = rows.map(r=>{
       const delta = toNum(r.delta_eV, NaN);
       const V = toNum(r.V_eV, NaN);
       const dop = toNum(r.DeltaOp_eV, NaN);
+      const T = toNum(r.T_K ?? r.T ?? 300, 300);
 
-      const { R, sin2phi, DeltaMix } = calc2x2(delta, V);
+      const diag = derivedDiagnostics(delta, V, T);
+      const CRS_auto = classifyCRS(dop, diag.R);
 
       return {
         ...r,
-        R: (R === Infinity) ? "∞" : fmt(R,3),
-        sin2phi: fmt(sin2phi,3),
-        DeltaMix: Number.isFinite(DeltaMix) ? fmt(DeltaMix,3) : "NaN",
-        CRS_auto: classifyCRS(dop, R)
+        R: (diag.R === Infinity) ? "∞" : fmt(diag.R,3),
+        sin2phi: fmt(diag.sin2phi,3),
+        DeltaMix: Number.isFinite(diag.DeltaMix) ? fmt(diag.DeltaMix,3) : "NaN",
+        kBT_eV: Number.isFinite(diag.kBT) ? fmt(diag.kBT,4) : "NaN",
+        thetaT: Number.isFinite(diag.theta_T) ? fmt(diag.theta_T,3) : "NaN",
+        tau: Number.isFinite(diag.tau) ? fmt(diag.tau,3) : "NaN",
+        CRS_auto
       };
     });
 
@@ -278,7 +539,9 @@ document.getElementById("filter")?.addEventListener("input", ()=>{
   const filtered = q ? pcptRaw.filter(r =>
     (r.symbol || "").toLowerCase().includes(q) ||
     (r.DMC || "").toLowerCase().includes(q) ||
-    (r.note || "").toLowerCase().includes(q)
+    (r.note || "").toLowerCase().includes(q) ||
+    (r.status || "").toLowerCase().includes(q) ||
+    (r.reason || "").toLowerCase().includes(q)
   ) : pcptRaw;
 
   const headers = pcptHeaders.length
@@ -296,7 +559,6 @@ let activeSymbol = null;
 
 /**
  * Minimal element metadata for display (symbol, Z, name).
- * No external deps. Enough for a clean UI.
  */
 const ELEMENTS = [
   {Z:1,s:"H",n:"Hydrogen"}, {Z:2,s:"He",n:"Helium"},
@@ -362,11 +624,7 @@ const ELEMENTS = [
 
 const E_BY_SYMBOL = new Map(ELEMENTS.map(e => [e.s, e]));
 
-/**
- * Layout positions (group/period):
- * - Main table: periods 1..7, groups 1..18
- * - f-block: rendered as separate rows
- */
+// Layout positions (group/period)
 const MAIN_LAYOUT = [
   {p:1,g:1,s:"H"}, {p:1,g:18,s:"He"},
   {p:2,g:1,s:"Li"}, {p:2,g:2,s:"Be"}, {p:2,g:13,s:"B"}, {p:2,g:14,s:"C"}, {p:2,g:15,s:"N"}, {p:2,g:16,s:"O"}, {p:2,g:17,s:"F"}, {p:2,g:18,s:"Ne"},
@@ -385,6 +643,10 @@ const LANTHANIDES = ["Ce","Pr","Nd","Pm","Sm","Eu","Gd","Tb","Dy","Ho","Er","Tm"
 const ACTINIDES   = ["Th","Pa","U","Np","Pu","Am","Cm","Bk","Cf","Es","Fm","Md","No","Lr"]; // Ac in main
 
 function crsClassFromRow(row){
+  // Only color if CRS is a real number and not placeholder/insufficient
+  const st = normStatus(row);
+  if (st === "insufficient") return "";
+
   const v = toNum(row?.CRS, NaN);
   if (!Number.isFinite(v)) return ""; // unknown
   const c = Math.max(0, Math.min(3, Math.round(v)));
@@ -493,16 +755,26 @@ function onSelectElement(symbol){
     title.textContent = `${symbol}${e?.n ? " — " + e.n : ""} ${e?.Z ? `(Z=${e.Z})` : ""}`;
 
     if (!row){
-      body.innerHTML = `<p class="small">No PCPT entry for <b>${symbol}</b> in <code>data/pcpt.csv</code>.</p>`;
+      body.innerHTML = `<p class="small">No PCPT entry for <b>${escapeHTML(symbol)}</b> in <code>data/pcpt.csv</code>.</p>`;
     } else {
       const rr = uiRow(row);
+      const st = normStatus(rr) || (isPlaceholderPCPT(rr) ? "insufficient" : "");
       const CRS = rr.CRS ?? "—";
       const DMC = rr.DMC ?? "—";
       const note = rr.note ?? "";
+      const reason = rr.reason ?? "";
+
+      const statusLabel =
+        st === "high" ? "Calculated (high confidence)" :
+        st === "low" ? "Calculated (low confidence)" :
+        st === "insufficient" ? "Insufficient NIST data / unclassified" :
+        "—";
 
       body.innerHTML = `
-        <div><span class="tag">CRS</span> <b>${escapeHTML(CRS)}</b></div>
+        <div><span class="tag">Status</span> <b>${escapeHTML(statusLabel)}</b></div>
+        <div style="margin-top:6px"><span class="tag">CRS</span> <b>${escapeHTML(CRS)}</b></div>
         <div style="margin-top:6px"><span class="tag">DMC</span> ${escapeHTML(DMC)}</div>
+        ${reason ? `<div style="margin-top:6px" class="small"><span class="tag">Reason</span> ${escapeHTML(reason)}</div>` : ""}
         <div style="margin-top:6px" class="small">${escapeHTML(note)}</div>
       `;
     }
@@ -514,8 +786,8 @@ function onSelectElement(symbol){
     filter.dispatchEvent(new Event("input"));
   }
 
-  // auto-fill calculator ONLY if not placeholder
-  if (row && !isPlaceholderPCPT(row)){
+  // auto-fill calculator ONLY if the row has real numeric fields and is not insufficient
+  if (row && !isPlaceholderPCPT(row) && normStatus(row) !== "insufficient"){
     const delta = toNum(row.delta_eV ?? row.delta ?? "", NaN);
     const V     = toNum(row.V_eV ?? row.V ?? "", NaN);
     const dop   = toNum(row.DeltaOp_eV ?? row.dop_eV ?? row.dop ?? row.DeltaOp ?? "", NaN);
@@ -539,16 +811,25 @@ function onSelectElement(symbol){
   try{
     await loadPCPT();
     await loadCasesOptional();
+
+    // Re-ensure help panel after everything is on DOM
+    ensureCalculatorHelpPanel();
   } catch(e){
     console.warn("Initial CSV load failed:", e.message);
   }
 })();
 
-// Service worker registration
+// Service worker registration (relative path is safer on GitHub Pages subpaths)
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
-    try { await navigator.serviceWorker.register("sw.js"); } catch(e) {}
+    try {
+      // keep relative: controls current directory scope
+      await navigator.serviceWorker.register("./sw.js");
+    } catch(e) {
+      console.warn("SW register failed:", e?.message ?? e);
+    }
   });
 }
+
 
 
