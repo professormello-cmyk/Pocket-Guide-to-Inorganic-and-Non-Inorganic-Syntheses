@@ -39,6 +39,19 @@ function fmt(x, n = 4){
 }
 
 /**
+ * HTML escaper (used across the app).
+ * NOTE: Must be defined before any function that calls it (renderOut, tables, details).
+ */
+function escapeHTML(s){
+  return String(s ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/**
  * 2×2 mixing model (two-level / two-channel competition)
  *
  * Interpret delta (Δ) as the *bare energy separation* between two competing frontier "channels"
@@ -162,135 +175,120 @@ function renderOut(){
 
 // Wire calculator
 document.getElementById("calc")?.addEventListener("click", renderOut);
-renderOut();
 
 // ------------------------------------------------------
 // Calculator help panel (auto-created if missing)
 // ------------------------------------------------------
 
-function escapeHTML(s){
-  return String(s ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
 const CALC_HELP_HTML = `
   <div class="help-block">
     <h3 style="margin:0 0 8px 0;font-size:16px">What the 2×2 calculator means (undergrad level)</h3>
     <p class="small" style="margin:0 0 10px 0">
-      Think of many “chemical surprises” as a competition between two nearby electronic
-      possibilities (“channels”) that can exchange character.
-      Examples: <b>s↔d</b> promotion in transition metals, <b>d↔d</b> near-degeneracy inside the d-manifold,
-      <b>HS↔LS</b> (spin crossover) in coordination chemistry, <b>SOC</b>-reordered frontier levels in heavy elements,
-      and <b>f/rel</b> effects in lanthanides/actinides.
+      Many “chemical surprises” can be treated as a competition between two nearby electronic
+      possibilities (“channels”) that can exchange character. The calculator is a compact way
+      to reason about <b>when</b> a chemical system is likely to behave stably, and <b>when</b> it is near a
+      fragile “corridor” where small changes (ligand, solvent, temperature, potential) can flip outcomes.
     </p>
 
     <h4 style="margin:10px 0 6px 0;font-size:14px">Inputs</h4>
     <ul class="small" style="margin:0 0 10px 18px;padding:0">
       <li>
         <b>Δ (delta, eV)</b> — the <i>bare separation</i> between two candidate frontier channels
-        before they mix. In synthesis terms: how far apart are the two “stories” the atom/complex could follow?
-        <br><span style="color:var(--muted,#9aa4af)">How to influence Δ:</span>
-        ligand field strength (strong-field vs weak-field ligands), oxidation state, geometry (octahedral vs square-planar),
-        donor/acceptor ligands, protonation, solvent polarity, and external fields (electrochemical potential).
+        before they mix. In synthesis terms: how far apart are the two “electronic stories”
+        the atom/complex could follow?
+        <br><span style="color:var(--muted,#9aa4af)">Typical channel pairs:</span>
+        s↔d promotion (many transition metals), d↔d near-degeneracy (within d-manifold),
+        HS↔LS (spin crossover), SOC-reordered branches (heavy elements), f/rel competition (Ln/An).
+        <br><span style="color:var(--muted,#9aa4af)">How to influence Δ (knobs):</span>
+        ligand field strength, oxidation state, geometry (octahedral vs square-planar vs tetrahedral),
+        donor/acceptor balance, protonation state, solvent polarity, and electrochemical potential.
       </li>
-      <li style="margin-top:6px">
-        <b>V (eV)</b> — the <i>coupling / hybridization strength</i> that mixes the channels.
+      <li style="margin-top:8px">
+        <b>V (eV)</b> — the <i>coupling / hybridization</i> between channels.
         Bigger V means the system can “borrow character” between the two options more easily.
-        <br><span style="color:var(--muted,#9aa4af)">How to influence V:</span>
-        covalency (soft ligands for soft metals), π-backbonding (CO/olefins),
-        orbital overlap (shorter bonds), bridging ligands, and heavier atoms (often stronger mixing via relativistic/SOC mechanisms).
+        <br><span style="color:var(--muted,#9aa4af)">How to influence V (knobs):</span>
+        covalency (soft–soft matches), orbital overlap (shorter/stronger bonds),
+        π-backbonding partners (CO, olefins), bridging ligands, and heavier atoms
+        (often stronger mixing via relativistic/SOC effects).
       </li>
-      <li style="margin-top:6px">
-        <b>Δop (operational gap, eV)</b> — your <i>task-specific gap</i>:
-        the energy distance between the “active manifold” and the nearest competitor that can steal the chemistry.
+      <li style="margin-top:8px">
+        <b>Δop (operational gap, eV)</b> — your <i>task-specific separation</i> between the chosen “active manifold”
+        and the closest competitor that can steal the chemistry.
         <br><span style="color:var(--muted,#9aa4af)">Practical read:</span>
-        large Δop means the active electronic picture is stable across conditions;
-        small Δop means small changes (ligand, solvent, temperature) can flip reactivity or spin state.
+        large Δop → the active picture is robust across conditions;
+        small Δop → small changes can flip spin state, oxidation preference, selectivity, or binding mode.
+        <br><span style="color:var(--muted,#9aa4af)">Where Δop shows up:</span>
+        catalyst resting state vs active state, competing coordination modes,
+        HS vs LS manifolds, alternative oxidation pathways, or competing adsorption states (bioinorganic).
       </li>
-      <li style="margin-top:6px">
-        <b>T (K)</b> — temperature. It sets the thermal scale <b>kBT</b> (in eV).
-        If kBT becomes comparable to a small gap, population/entropy effects can change the observed chemistry.
+      <li style="margin-top:8px">
+        <b>T (K)</b> — temperature. It sets the thermal energy scale <b>kBT</b> (in eV).
+        If kBT becomes comparable to a small gap, population/entropy effects can change observed chemistry
+        (especially spin equilibria and weak binding competitions).
       </li>
     </ul>
 
-    <h4 style="margin:10px 0 6px 0;font-size:14px">Outputs (what you compute)</h4>
+    <h4 style="margin:10px 0 6px 0;font-size:14px">Outputs</h4>
     <ul class="small" style="margin:0 0 10px 18px;padding:0">
       <li>
-        <b>Δmix (eV)</b> = √(Δ² + 4V²) — the <i>avoided-crossing gap</i>.
-        Even if Δ is tiny, mixing opens a gap. If Δmix is tiny too, you are in a “corridor” region:
-        small perturbations can reorder frontier character.
+        <b>Δmix (eV)</b> = √(Δ² + 4V²) — the <i>avoided-crossing gap</i> after mixing.
+        If Δ and V are both small enough that Δmix is small, you are in a “corridor”: frontier identity can be fragile.
       </li>
-      <li style="margin-top:6px">
-        <b>R</b> = |Δ|/|V| — a dimensionless “distance from the corridor”.
+      <li style="margin-top:8px">
+        <b>R</b> = |Δ|/|V| — “distance from the corridor” (dimensionless).
         <br><span style="color:var(--muted,#9aa4af)">Rule of thumb:</span>
-        R ≫ 1 → weak mixing (safe, stable electronic identity);
+        R ≫ 1 → weak mixing (stable identity);
         R ~ 1 → strong competition (corridor);
-        R ≪ 1 → almost maximal mixing (identity is fragile).
+        R ≪ 1 → near-maximal mixing (identity is very fragile).
       </li>
-      <li style="margin-top:6px">
-        <b>sin²φ</b> — mixing weight (0..1). Near 0 or 1: mostly one channel. Near 0.5: strong hybrid character.
-        <br><span style="color:var(--muted,#9aa4af)">Why you care:</span>
-        strong mixing often correlates with “condition-sensitive” selectivity in catalysis
-        (different products under small changes in ligands/solvent/additives).
+      <li style="margin-top:8px">
+        <b>sin²φ</b> — mixing weight (0..1). Near 0 or 1 means mostly one channel; near 0.5 means strong hybrid character.
+        Strong mixing often correlates with condition-sensitive selectivity (ligand/additive/solvent changes matter more).
       </li>
-      <li style="margin-top:6px">
-        <b>kBT (eV)</b> — thermal energy at temperature T. If kBT is not small compared to gaps,
-        thermal population and entropy can alter observed states (especially HS↔LS).
+      <li style="margin-top:8px">
+        <b>kBT (eV)</b> — thermal energy at temperature T. This is the “budget” temperature has to access low gaps.
       </li>
-      <li style="margin-top:6px">
-        <b>θT</b> = kBT/Δmix — a <i>thermal access</i> proxy. Larger θT means thermal energy can “see” the gap.
+      <li style="margin-top:8px">
+        <b>θT</b> = kBT/Δmix — a <i>thermal access</i> proxy. Larger θT means temperature can plausibly perturb the mixed gap.
       </li>
-      <li style="margin-top:6px">
-        <b>τ</b> — a bounded planning proxy combining <i>mixing amplitude</i> and <i>thermal access</i>.
-        Larger τ suggests “you should expect switching risk” as conditions change.
+      <li style="margin-top:8px">
+        <b>τ</b> — bounded planning proxy combining <i>mixing amplitude</i> and <i>thermal access</i>.
+        Larger τ suggests “switching risk” under temperature/condition changes.
       </li>
-      <li style="margin-top:6px">
-        <b>CRS</b> (0–3) — corridor risk score (currently heuristic thresholds in this file).
-        Higher CRS means higher risk that chemistry flips under realistic variations.
+      <li style="margin-top:8px">
+        <b>CRS</b> (0–3) — corridor risk score (currently heuristic thresholds in this file; edit to match your paper).
+        Higher CRS means higher risk that the chemistry flips under realistic variations.
       </li>
     </ul>
 
-    <h4 style="margin:10px 0 6px 0;font-size:14px">How to use this in synthesis planning</h4>
+    <h4 style="margin:10px 0 6px 0;font-size:14px">Synthesis planning cheat-sheet (no trial-and-error worship)</h4>
     <ol class="small" style="margin:0 0 10px 18px;padding:0">
       <li>
-        <b>Pick a target reaction role</b>: redox catalyst, cross-coupling center, Lewis acid, spin-state switch,
-        bioinorganic binding site (O₂/NO/CO), etc.
+        <b>Decide what you want:</b> stability (single clean pathway) vs switchability (responsive/selectivity-rich).
       </li>
       <li style="margin-top:6px">
-        <b>Map your “knobs” to Δ and V</b>:
-        <ul style="margin:6px 0 0 18px;padding:0">
-          <li><b>Δ knobs</b>: ligand field strength, oxidation state, geometry, hard/soft donors, protonation.</li>
-          <li><b>V knobs</b>: covalency & overlap, π-backbonding ligands (CO/olefins), bridging, heavier atoms/SOC.</li>
-        </ul>
+        <b>If you want robustness:</b> aim for larger R and larger Δop (stronger ligand field separation, clearer geometry control).
       </li>
       <li style="margin-top:6px">
-        <b>Decide if you want stability or switchability</b>:
-        <ul style="margin:6px 0 0 18px;padding:0">
-          <li><b>Stable catalyst identity</b> (predictable selectivity): aim for larger R and larger Δop.</li>
-          <li><b>Tunable/selectivity-rich system</b> (responsive catalysis, spin-state control): corridor region (R~1) is useful,
-              but you must control conditions carefully.</li>
-        </ul>
+        <b>If you want tunability:</b> corridor region (R ~ 1) can be useful, but then you must control:
+        ligand identity/ratio, solvent, redox potential, additives, and temperature.
       </li>
       <li style="margin-top:6px">
-        <b>Temperature sanity check</b>:
-        if θT is large, temperature can activate switching (especially in spin-crossover / bioinorganic binding equilibria).
+        <b>Temperature sanity check:</b> if θT is large, temperature can activate switching
+        (common in spin-crossover, weak binding equilibria, and bioinorganic binding competitions).
       </li>
     </ol>
 
     <p class="small" style="margin:0;color:var(--muted,#9aa4af)">
-      Warning: this calculator is a <b>structure-to-risk lens</b>, not a kinetics simulator.
-      It is meant to reduce blind trial-and-error by highlighting when you are near a spectral competition corridor.
+      Warning: this is a <b>structure-to-risk lens</b>, not a kinetics simulator.
+      It helps you spot when you are near spectral competition corridors so you can plan conditions
+      (ligand field, solvent, potential, temperature) instead of praying to the gods of “try it and see”.
     </p>
   </div>
 `;
 
 function ensureCalculatorHelpPanel(){
-  // Strategy: find a calculator container; if not found, do nothing.
-  // We try common ids: "calculator", "calcHelp", "helpToggle", "helpPanel".
+  // Find a calculator container; if not found, do nothing.
   const calcRoot =
     document.getElementById("calculator") ||
     document.getElementById("calcRoot") ||
@@ -298,12 +296,11 @@ function ensureCalculatorHelpPanel(){
 
   if (!calcRoot) return;
 
-  // If user already has a help panel in HTML, just wire it.
+  // If already present in HTML, just wire it.
   let toggle = document.getElementById("helpToggle");
   let panel  = document.getElementById("helpPanel");
 
   if (!toggle || !panel){
-    // Create minimal UI elements (works even if CSS doesn't define these classes)
     const wrap = document.createElement("div");
     wrap.style.marginTop = "10px";
 
@@ -326,15 +323,16 @@ function ensureCalculatorHelpPanel(){
     calcRoot.appendChild(wrap);
   }
 
-  toggle.addEventListener("click", ()=>{
-    const open = panel.style.display !== "none";
-    panel.style.display = open ? "none" : "block";
-    toggle.innerHTML = open ? "▼ Explain parameters (click)" : "▲ Hide explanation";
-  });
+  // Avoid double-binding if called multiple times
+  if (!toggle.dataset.bound){
+    toggle.dataset.bound = "1";
+    toggle.addEventListener("click", ()=>{
+      const open = panel.style.display !== "none";
+      panel.style.display = open ? "none" : "block";
+      toggle.innerHTML = open ? "▼ Explain parameters (click)" : "▲ Hide explanation";
+    });
+  }
 }
-
-// Ensure help panel after load (also safe to call multiple times)
-ensureCalculatorHelpPanel();
 
 // ------------------------------------------------------
 // CSV loader (no deps) — slightly more robust
@@ -812,8 +810,11 @@ function onSelectElement(symbol){
     await loadPCPT();
     await loadCasesOptional();
 
-    // Re-ensure help panel after everything is on DOM
+    // Ensure help panel after everything is on DOM
     ensureCalculatorHelpPanel();
+
+    // Render calculator once after DOM is ready (prevents "escapeHTML not defined" issues)
+    renderOut();
   } catch(e){
     console.warn("Initial CSV load failed:", e.message);
   }
