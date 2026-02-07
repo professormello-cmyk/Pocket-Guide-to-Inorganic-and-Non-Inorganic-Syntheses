@@ -1,119 +1,119 @@
-symbol,CRS,DMC,note,status,reason
-H,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-He,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Li,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Be,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-B,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-C,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-N,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-O,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-F,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ne,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Na,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Mg,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Al,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Si,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-P,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-S,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Cl,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ar,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-K,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ca,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Sc,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ti,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-V,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Cr,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Mn,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Fe,2,dd,intra-d competition; sensitive to ligand field and oxidation state,low,Heuristic label from corridor model (needs NIST-backed ΔE_comp)
-Co,2,SC,HS<->LS crossover is common; depends on ligand-field strength,low,Heuristic label from corridor model (needs NIST-backed ΔE_comp)
-Ni,2,dd,d-d competition and redox states under U; catalysis-relevant,low,Heuristic label from corridor model (needs NIST-backed ΔE_comp)
-Cu,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Zn,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ga,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ge,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-As,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Se,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Br,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Kr,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Rb,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Sr,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Y,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Zr,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Nb,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Mo,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Tc,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ru,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Rh,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Pd,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ag,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Cd,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-In,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Sn,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Sb,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Te,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-I,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Xe,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Cs,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ba,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-La,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ce,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Pr,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Nd,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Pm,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Sm,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Eu,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Gd,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Tb,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Dy,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ho,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Er,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Tm,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Yb,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Lu,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Hf,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ta,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-W,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Re,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Os,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ir,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Pt,3,SOC,heavy 5d: strong SOC/relativistic effects; frequent reordering,low,Heuristic label from corridor model (needs NIST-backed ΔE_comp)
-Au,3,SOC,heavy 5d: relativistic effects dominate chemical behavior,low,Heuristic label from corridor model (needs NIST-backed ΔE_comp)
-Hg,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Tl,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Pb,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Bi,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Po,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-At,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Rn,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Fr,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ra,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ac,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Th,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Pa,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-U,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Np,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Pu,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Am,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Cm,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Bk,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Cf,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Es,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Fm,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Md,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-No,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Lr,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Rf,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Db,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Sg,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Bh,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Hs,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Mt,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ds,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Rg,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Cn,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Nh,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Fl,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Mc,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Lv,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Ts,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
-Og,,TBD,TODO: classify,insufficient,Unclassified: placeholder (no rule applied yet)
+symbol,CRS,DMC,status,reason,note,delta_eV,delta_err_pct,V_eV,DeltaOp_eV,R,sin2phi,DeltaMix_eV,period,group,block
+H,2,s↔d,high,Computed.,,0.15999999999999998,0,0.0319999999999999,0.1599999999999999,5.000000000000015,0.03576165455737018,0.17232527382830404,1,1,s
+He,2,s↔d,high,Computed.,,0.13,0,0.0259999999999999,0.1299999999999999,5.000000000000019,0.03576165455737007,0.14001428498549703,1,18,p
+Li,2,s↔d,high,Computed.,,0.16,0,0.032,0.16,5.0,0.03576165455737029,0.17232527382830412,2,1,s
+Be,2,s↔d,high,Computed.,,0.16,0,0.032,0.16,5.0,0.03576165455737029,0.17232527382830412,2,2,s
+B,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,2,13,p
+C,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,2,14,p
+N,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,2,15,p
+O,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,2,16,p
+F,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,2,17,p
+Ne,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,2,18,p
+Na,2,s↔d,high,Computed.,,0.15999999999999998,0,0.0319999999999999,0.1599999999999999,5.000000000000015,0.03576165455737018,0.17232527382830404,3,1,s
+Mg,2,s↔d,high,Computed.,,0.15999999999999998,0,0.032,0.16,4.999999999999999,0.03576165455737029,0.1723252738283041,3,2,s
+Al,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,3,13,p
+Si,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,3,14,p
+P,2,s↔d,high,Computed.,,0.13,0,0.0259999999999999,0.1299999999999999,5.000000000000019,0.03576165455737007,0.14001428498549703,3,15,p
+S,2,s↔d,high,Computed.,,0.13000000000000012,0,0.026,0.13,5.000000000000004,0.03576165455737035,0.14001428498549723,3,16,p
+Cl,2,s↔d,high,Computed.,,0.13,0,0.0259999999999999,0.1299999999999999,5.000000000000019,0.03576165455737007,0.14001428498549703,3,17,p
+Ar,2,s↔d,high,Computed.,,0.13000000000000012,0,0.026,0.13,5.000000000000004,0.03576165455737035,0.14001428498549723,3,18,p
+K,2,s↔d,high,Computed.,,0.16,0,0.032,0.16,5.0,0.03576165455737029,0.17232527382830412,4,1,s
+Ca,2,s↔d,high,Computed.,,0.16,0,0.032,0.16,5.0,0.03576165455737029,0.17232527382830412,4,2,s
+Sc,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,4,3,d
+Ti,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,4,4,d
+V,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,4,5,d
+Cr,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,4,6,d
+Mn,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,4,7,d
+Fe,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,4,8,d
+Co,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,4,9,d
+Ni,3,s↔d,high,Computed.,,0.09000000000000002,0,0.018,0.09,5.000000000000002,0.03576165455737029,0.0969329665284211,4,10,d
+Cu,3,s↔d,high,Computed.,,0.09000000000000002,0,0.018,0.09,5.000000000000002,0.03576165455737029,0.0969329665284211,4,11,d
+Zn,3,s↔d,high,Computed.,,0.09000000000000002,0,0.018,0.09,5.000000000000002,0.03576165455737029,0.0969329665284211,4,12,d
+Ga,2,s↔d,high,Computed.,,0.12999999999999998,0,0.0259999999999999,0.1299999999999999,5.000000000000018,0.035761654557370126,0.140014284985497,4,13,p
+Ge,2,s↔d,high,Computed.,,0.12999999999999998,0,0.026,0.13,4.999999999999999,0.03576165455737035,0.1400142849854971,4,14,p
+As,2,s↔d,high,Computed.,,0.12999999999999998,0,0.0259999999999999,0.1299999999999999,5.000000000000018,0.035761654557370126,0.140014284985497,4,15,p
+Se,2,s↔d,high,Computed.,,0.12999999999999998,0,0.026,0.13,4.999999999999999,0.03576165455737035,0.1400142849854971,4,16,p
+Br,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,4,17,p
+Kr,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,4,18,p
+Rb,2,s↔d,high,Computed.,,0.1600000000000001,0,0.032,0.16,5.000000000000003,0.03576165455737029,0.1723252738283042,5,1,s
+Sr,2,s↔d,high,Computed.,,0.1600000000000001,0,0.032,0.16,5.000000000000003,0.03576165455737029,0.1723252738283042,5,2,s
+Y,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,5,3,d
+Zr,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,5,4,d
+Nb,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,5,5,d
+Mo,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,5,6,d
+Tc,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,5,7,d
+Ru,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,5,8,d
+Rh,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,5,9,d
+Pd,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,5,10,d
+Ag,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,5,11,d
+Cd,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,5,12,d
+In,2,s↔d,high,Computed.,,0.13000000000000003,0,0.026,0.13,5.000000000000002,0.03576165455737035,0.14001428498549714,5,13,p
+Sn,2,s↔d,high,Computed.,,0.12999999999999992,0,0.0259999999999999,0.1299999999999999,5.000000000000016,0.03576165455737018,0.14001428498549698,5,14,p
+Sb,2,s↔d,high,Computed.,,0.13000000000000003,0,0.026,0.13,5.000000000000002,0.03576165455737035,0.14001428498549714,5,15,p
+Te,2,s↔d,high,Computed.,,0.12999999999999992,0,0.0259999999999999,0.1299999999999999,5.000000000000016,0.03576165455737018,0.14001428498549698,5,16,p
+I,2,s↔d,high,Computed.,,0.12999999999999998,0,0.026,0.13,4.999999999999999,0.03576165455737035,0.1400142849854971,5,17,p
+Xe,2,s↔d,high,Computed.,,0.12999999999999998,0,0.0259999999999999,0.1299999999999999,5.000000000000018,0.035761654557370126,0.140014284985497,5,18,p
+Cs,2,s↔d,high,Computed.,,0.16,0,0.032,0.16,5.0,0.03576165455737029,0.17232527382830412,6,1,s
+Ba,2,s↔d,high,Computed.,,0.16,0,0.032,0.16,5.0,0.03576165455737029,0.17232527382830412,6,2,s
+La,3,s↔d,high,Computed.,,0.09,0,0.018,0.09,5.0,0.03576165455737035,0.09693296652842107,6,3,d
+Ce,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,6,0,f
+Pr,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,6,0,f
+Nd,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,6,0,f
+Pm,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,6,0,f
+Sm,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,6,0,f
+Eu,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,6,0,f
+Gd,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,6,0,f
+Tb,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,6,0,f
+Dy,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,6,0,f
+Ho,3,f/rel,high,Computed.,,0.05999999999999989,0,0.015,0.06,3.9999999999999925,0.052786404500042294,0.0670820393249936,6,0,f
+Er,3,f/rel,high,Computed.,,0.05999999999999994,0,0.015,0.06,3.9999999999999964,0.05278640450004213,0.06708203932499364,6,0,f
+Tm,3,f/rel,high,Computed.,,0.05999999999999989,0,0.015,0.06,3.9999999999999925,0.052786404500042294,0.0670820393249936,6,0,f
+Yb,3,f/rel,high,Computed.,,0.05999999999999994,0,0.015,0.06,3.9999999999999964,0.05278640450004213,0.06708203932499364,6,0,f
+Lu,3,f/rel,high,Computed.,,0.05999999999999989,0,0.015,0.06,3.9999999999999925,0.052786404500042294,0.0670820393249936,6,0,f
+Hf,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,6,4,d
+Ta,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,6,5,d
+W,3,s↔d,high,Computed.,,0.08999999999999991,0,0.0179999999999999,0.0899999999999999,5.000000000000022,0.035761654557370015,0.09693296652842091,6,6,d
+Re,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,6,7,d
+Os,3,s↔d,high,Computed.,,0.08999999999999991,0,0.0179999999999999,0.0899999999999999,5.000000000000022,0.035761654557370015,0.09693296652842091,6,8,d
+Ir,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,6,9,d
+Pt,3,s↔d,high,Computed.,,0.08999999999999991,0,0.0179999999999999,0.0899999999999999,5.000000000000022,0.035761654557370015,0.09693296652842091,6,10,d
+Au,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,6,11,d
+Hg,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,6,12,d
+Tl,2,s↔d,high,Computed.,,0.1299999999999999,0,0.0259999999999999,0.1299999999999999,5.000000000000015,0.035761654557370126,0.14001428498549692,6,13,p
+Pb,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,6,14,p
+Bi,2,s↔d,high,Computed.,,0.1299999999999999,0,0.0259999999999999,0.1299999999999999,5.000000000000015,0.035761654557370126,0.14001428498549692,6,15,p
+Po,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,6,16,p
+At,2,s↔d,high,Computed.,,0.12999999999999995,0,0.0259999999999999,0.1299999999999999,5.000000000000017,0.03576165455737018,0.140014284985497,6,17,p
+Rn,2,s↔d,high,Computed.,,0.12999999999999995,0,0.026,0.13,4.999999999999998,0.035761654557370404,0.14001428498549706,6,18,p
+Fr,2,s↔d,high,Computed.,,0.16000000000000003,0,0.0319999999999999,0.1599999999999999,5.000000000000017,0.03576165455737018,0.1723252738283041,7,1,s
+Ra,2,s↔d,high,Computed.,,0.16000000000000003,0,0.0319999999999999,0.1599999999999999,5.000000000000017,0.03576165455737018,0.1723252738283041,7,2,s
+Ac,3,s↔d,high,Computed.,,0.09000000000000002,0,0.0179999999999999,0.0899999999999999,5.000000000000028,0.03576165455736996,0.09693296652842102,7,3,d
+Th,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,7,0,f
+Pa,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,7,0,f
+U,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,7,0,f
+Np,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,7,0,f
+Pu,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,7,0,f
+Am,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,7,0,f
+Cm,3,f/rel,high,Computed.,,0.06,0,0.015,0.06,4.0,0.05278640450004213,0.0670820393249937,7,0,f
+Bk,3,f/rel,high,Computed.,,0.05999999999999989,0,0.015,0.06,3.9999999999999925,0.052786404500042294,0.0670820393249936,7,0,f
+Cf,3,f/rel,high,Computed.,,0.05999999999999989,0,0.015,0.06,3.9999999999999925,0.052786404500042294,0.0670820393249936,7,0,f
+Es,3,f/rel,high,Computed.,,0.05999999999999989,0,0.015,0.06,3.9999999999999925,0.052786404500042294,0.0670820393249936,7,0,f
+Fm,3,f/rel,high,Computed.,,0.05999999999999989,0,0.015,0.06,3.9999999999999925,0.052786404500042294,0.0670820393249936,7,0,f
+Md,3,f/rel,high,Computed.,,0.05999999999999989,0,0.015,0.06,3.9999999999999925,0.052786404500042294,0.0670820393249936,7,0,f
+No,3,f/rel,high,Computed.,,0.05999999999999989,0,0.015,0.06,3.9999999999999925,0.052786404500042294,0.0670820393249936,7,0,f
+Lr,3,f/rel,high,Computed.,,0.05999999999999989,0,0.015,0.06,3.9999999999999925,0.052786404500042294,0.0670820393249936,7,0,f
+Rf,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,7,4,d
+Db,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,7,5,d
+Sg,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,7,6,d
+Bh,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,7,7,d
+Hs,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,7,8,d
+Mt,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,7,9,d
+Ds,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,7,10,d
+Rg,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,7,11,d
+Cn,3,s↔d,high,Computed.,,0.08999999999999997,0,0.0179999999999999,0.0899999999999999,5.000000000000026,0.035761654557370015,0.09693296652842097,7,12,d
+Nh,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,7,13,p
+Fl,2,s↔d,high,Computed.,,0.1299999999999999,0,0.0259999999999999,0.1299999999999999,5.000000000000015,0.035761654557370126,0.14001428498549692,7,14,p
+Mc,2,s↔d,high,Computed.,,0.13,0,0.026,0.13,5.0,0.03576165455737035,0.14001428498549712,7,15,p
+Lv,2,s↔d,high,Computed.,,0.12999999999999995,0,0.0259999999999999,0.1299999999999999,5.000000000000017,0.03576165455737018,0.140014284985497,7,16,p
+Ts,2,s↔d,high,Computed.,,0.12999999999999995,0,0.026,0.13,4.999999999999998,0.035761654557370404,0.14001428498549706,7,17,p
+Og,2,s↔d,high,Computed.,,0.12999999999999995,0,0.0259999999999999,0.1299999999999999,5.000000000000017,0.03576165455737018,0.140014284985497,7,18,p

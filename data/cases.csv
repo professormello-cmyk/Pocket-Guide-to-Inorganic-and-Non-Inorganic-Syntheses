@@ -1,0 +1,3 @@
+case,symbol,delta_eV,V_eV,DeltaOp_eV,T_K
+demo_Fe,Fe,0.12,0.05,0.2,300
+demo_Pd,Pd,0.04,0.03,0.1,300
